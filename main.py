@@ -1,13 +1,11 @@
-from fastapi import FastAPI
-from contextlib import asynccontextmanager
 
-# from core.exceptions import (
-#     UserAlreadyExistsException, user_already_exists_handler,
-#     InvalidCredentialsException, invalid_credentials_handler
-# )
-from app.core.db import Base
-from app.core.db import engine
-# from routers.api import api_router
+
+from contextlib import asynccontextmanager
+from app.core.exceptions import UserAlreadyExistsException, user_already_exists_handler
+from app.routers.user_router import router as user_router
+from app.core.db import engine, Base
+from fastapi import FastAPI
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -21,8 +19,8 @@ async def lifespan(app: FastAPI):
 app = FastAPI(title="Production Auth API", lifespan=lifespan)
 
 # Register Exception Handlers
-# app.add_exception_handler(UserAlreadyExistsException, user_already_exists_handler)
+app.add_exception_handler(UserAlreadyExistsException, user_already_exists_handler) # type: ignore[arg-type]
 # app.add_exception_handler(InvalidCredentialsException, invalid_credentials_handler)
 
 # Include Central Router
-# app.include_router(api_router)
+app.include_router(user_router,prefix="/api/v1")
