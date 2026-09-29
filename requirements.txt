@@ -1,1 +1,8 @@
 fastapi
+uvicorn[standard]
+sqlalchemy[asyncio]
+pymysql
+cryptography
+pydantic[email]
+bcrypt
+python-dotenv
