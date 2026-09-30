@@ -6,3 +6,4 @@ cryptography
 pydantic[email]
 bcrypt
 python-dotenv
+PyJWT
