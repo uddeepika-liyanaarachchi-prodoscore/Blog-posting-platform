@@ -2,7 +2,7 @@ from contextlib import asynccontextmanager
 
 from app.core.config import settings
 from app.core.exceptions import InvalidPasswordException, UserAlreadyExistsException, user_already_exists_handler ,username_password_invalicd_handler
-from app.routers.user_router import router as user_router
+from app.routers.router import api_router
 from app.core.db import AsyncSessionLocal, engine, Base
 from app.core.seed import seed_initial_admin
 from fastapi import FastAPI
@@ -38,4 +38,4 @@ app = FastAPI(title="Production Auth API", lifespan=lifespan)
 app.add_exception_handler(UserAlreadyExistsException, user_already_exists_handler) # type: ignore[arg-type]
 app.add_exception_handler(InvalidPasswordException, username_password_invalicd_handler) # type: ignore
 # Include Central Router
-app.include_router(user_router,prefix="/api/v1")
+app.include_router(api_router,prefix="/api/v1")
