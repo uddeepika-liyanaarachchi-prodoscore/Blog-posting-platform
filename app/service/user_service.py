@@ -82,6 +82,7 @@ class AuthService:
             return {
                 "access_token": new_access_token,
                 "refresh_token": refresh_token_str,
+                "role": payload["role"],
                 "token_type": "bearer"
             }
     

@@ -5,7 +5,7 @@ from app.middleware.roles import authorize_roles
 from app.model.user_model import Role
 from app.repository.user_repository import UserRepository
 from app.service.user_service import AuthService
-from app.schemas.user_schema import TokenResponseSchema, UserLoginSchema, UserRegisterSchema, UserResponseSchema
+from app.schemas.user_schema import TokenResponseSchema, UserLoginSchema, UserRegisterSchema, UserResponseSchema , RefreshTokenRequestSchema
 from app.controller import user_controller
 from app.core.db import get_db_session
 
@@ -27,6 +27,15 @@ async def register_admin(body: UserRegisterSchema,service: AuthService = Depends
 async def login(body: UserLoginSchema, service:AuthService=Depends(get_auth_service)):
     return await user_controller.login_user(body,service)
 
+
+
+@router.post("/refresh", response_model=TokenResponseSchema, status_code=status.HTTP_200_OK)
+async def refresh_token(
+    body: RefreshTokenRequestSchema, 
+    service: AuthService = Depends(get_auth_service)
+):
+    tokens = await service.refresh_access_token(body.refresh_token)
+    return TokenResponseSchema(**tokens)
 
 # -----------------------TEST------------------------------------------------------
 
