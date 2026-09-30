@@ -7,3 +7,4 @@ pydantic[email]
 bcrypt
 python-dotenv
 PyJWT
+aiomysql

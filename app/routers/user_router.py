@@ -1,11 +1,11 @@
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, BackgroundTasks, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.middleware.roles import authorize_roles
 from app.model.user_model import Role
 from app.repository.user_repository import UserRepository
 from app.service.user_service import AuthService
-from app.schemas.user_schema import TokenResponseSchema, UserLoginSchema, UserRegisterSchema, UserResponseSchema , RefreshTokenRequestSchema
+from app.schemas.user_schema import ForgotPasswordRequestSchema, ResetPasswordRequestSchema, TokenResponseSchema, UserLoginSchema, UserProfileUpdateSchema, UserRegisterSchema, UserResponseSchema , RefreshTokenRequestSchema
 from app.controller import user_controller
 from app.core.db import get_db_session
 
@@ -27,8 +27,6 @@ async def register_admin(body: UserRegisterSchema,service: AuthService = Depends
 async def login(body: UserLoginSchema, service:AuthService=Depends(get_auth_service)):
     return await user_controller.login_user(body,service)
 
-
-
 @router.post("/refresh", response_model=TokenResponseSchema, status_code=status.HTTP_200_OK)
 async def refresh_token(
     body: RefreshTokenRequestSchema, 
@@ -37,6 +35,35 @@ async def refresh_token(
     tokens = await service.refresh_access_token(body.refresh_token)
     return TokenResponseSchema(**tokens)
 
+@router.get("/profile", response_model=UserResponseSchema)
+async def get_my_profile(
+    current_user: dict = Depends(authorize_roles([Role.USER, Role.ADMIN])),
+    service: AuthService = Depends(get_auth_service)
+):
+    return await service.get_profile(current_user["user_id"])
+
+@router.put("/profile", response_model=UserResponseSchema)
+async def update_my_profile(
+    body: UserProfileUpdateSchema,
+    current_user: dict = Depends(authorize_roles([Role.USER, Role.ADMIN])),
+    service: AuthService = Depends(get_auth_service)
+):
+    return await service.update_profile(current_user["user_id"], body)
+
+@router.post("/forgot-password")
+async def forgot_password(
+    body: ForgotPasswordRequestSchema,
+    bg_tasks: BackgroundTasks,
+    service: AuthService = Depends(get_auth_service)
+):
+    return await service.request_password_reset(body, bg_tasks)
+
+@router.post("/reset-password")
+async def reset_password(
+    body: ResetPasswordRequestSchema,
+    service: AuthService = Depends(get_auth_service)
+):
+    return await service.reset_password(body)
 # -----------------------TEST------------------------------------------------------
 
 
