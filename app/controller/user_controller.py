@@ -5,6 +5,12 @@ async def register_user(body: UserRegisterSchema, service: AuthService) -> UserR
     user = await service.register(body)
     return UserResponseSchema.model_validate(user)
 
+async def create_admin_user(body: UserRegisterSchema, service: AuthService) -> UserResponseSchema:
+    user = await service.register_admin(body)
+    print(user)
+    return UserResponseSchema.model_validate(user)
+
+
 async def login_user(body: UserLoginSchema, service: AuthService) -> TokenResponseSchema:
     user = await service.login(body)
     return TokenResponseSchema(**user)

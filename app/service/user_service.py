@@ -27,6 +27,23 @@ class AuthService:
        )
        return await self._user_repository.create(new_user)
 
+    async def register_admin(self, data: UserRegisterSchema) -> UserModel:
+           existing_user = await self._user_repository.get_by_email(data.email)
+           if existing_user:
+               raise UserAlreadyExistsException(email=data.email)
+    
+           hashed_pwd = hash_password(data.password)
+           new_user = UserModel(
+               email=data.email,
+               hashed_password=hashed_pwd,
+               role=Role.ADMIN.value
+           )
+           print(new_user)
+           print(new_user.role)
+
+           return await self._user_repository.create(new_user)
+
+    
     async def login(self,data: UserLoginSchema) -> dict:
         user = await self._user_repository.get_by_email(data.email)
 
@@ -36,7 +53,7 @@ class AuthService:
         payload = {
             "sub": user.email,
             "user_id": user.id,
-            "user_role": user.role
+            "role": user.role
         }
 
         access_token = create_access_token(payload)
@@ -45,6 +62,7 @@ class AuthService:
         return{
             "access_token":access_token,
             "refresh_token": refresh_token,
+            "role":user.role,
             "token_type": "bearer"
         }
 

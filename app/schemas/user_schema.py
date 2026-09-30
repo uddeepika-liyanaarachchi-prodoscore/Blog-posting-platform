@@ -13,6 +13,7 @@ class UserLoginSchema(BaseModel):
 class TokenResponseSchema(BaseModel):
     access_token: str
     refresh_token: str
+    role:Role
     token_type: str = "bearer"
 
 class RefreshTokenRequestSchema(BaseModel):
