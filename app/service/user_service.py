@@ -48,7 +48,7 @@ class AuthService:
         user = await self._user_repository.get_by_email(data.email)
 
         if not user or not verify_password(data.password,str(user.hashed_password)):
-            raise InvalidPasswordException()
+            raise InvalidPasswordException(email=data.email)
 
         payload = {
             "sub": user.email,

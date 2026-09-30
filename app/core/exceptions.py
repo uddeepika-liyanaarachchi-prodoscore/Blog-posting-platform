@@ -10,7 +10,7 @@ class UserAlreadyExistsException(AppExceptions):
         super().__init__(f"User with email '{email}' already exists.")
 
 class InvalidPasswordException(AppExceptions):
-    def _init_(self,email:str):
+    def __init__(self,email:str):
         self.email = email
         super().__init__(f"Invalid Password")
 

@@ -22,10 +22,11 @@ async def init_mysql_database():
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    await init_mysql_database()
+
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
 
-    await init_mysql_database()
     async with AsyncSessionLocal() as session: 
         await seed_initial_admin(session)
 

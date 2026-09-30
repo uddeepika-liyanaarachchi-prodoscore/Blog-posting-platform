@@ -4,10 +4,10 @@ from fastapi import FastAPI
 from sqlalchemy.ext.asyncio import create_async_engine,async_sessionmaker,AsyncSession
 from sqlalchemy.orm import declarative_base
 
-from app.core.config import Settings
+from app.core.config import settings
 
 # create the database connection
-engine = create_async_engine(Settings.DATABASE_URL, echo=True)
+engine = create_async_engine(settings.DATABASE_URL, echo=True)
 
 # create a session everytime 
 AsyncSessionLocal = async_sessionmaker(bind=engine, autoflush=False,expire_on_commit=False)

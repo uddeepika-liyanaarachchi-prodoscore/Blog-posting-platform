@@ -23,7 +23,7 @@ async def register(body: UserRegisterSchema,service: AuthService = Depends(get_a
 async def register_admin(body: UserRegisterSchema,service: AuthService = Depends(get_auth_service),current_user: dict = Depends(authorize_roles([Role.ADMIN])),):
     return await user_controller.create_admin_user(body, service)
 
-@router.post("/login", response_model=TokenResponseSchema, status_code=status.HTTP_201_CREATED)
+@router.post("/login", response_model=TokenResponseSchema, status_code=status.HTTP_200_OK)
 async def login(body: UserLoginSchema, service:AuthService=Depends(get_auth_service)):
     return await user_controller.login_user(body,service)
 
