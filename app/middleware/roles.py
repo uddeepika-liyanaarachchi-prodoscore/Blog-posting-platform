@@ -2,7 +2,7 @@
 from typing import List
 from fastapi import Depends, HTTPException, status
 from app.model.user_model import Role
-from middleware.auth import authenticate
+from app.middleware.auth import authenticate
 
 def authorize_roles(allowed_roles: List[Role]):
     async def role_checker(current_user: dict = Depends(authenticate)) -> dict:

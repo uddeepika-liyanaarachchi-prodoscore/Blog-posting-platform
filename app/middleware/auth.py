@@ -1,7 +1,7 @@
 # middleware/auth.py
 from fastapi import Header, HTTPException, status
 import jwt
-from core.security import decode_access_token
+from app.core.security import decode_access_token
 
 async def authenticate(authorization: str = Header(None)) -> dict:
     if not authorization:
