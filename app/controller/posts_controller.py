@@ -1,15 +1,12 @@
-from fastapi import APIRouter, Form,status
-from typing import List, Optional
-from fastapi import APIRouter, Depends, UploadFile, File, Form, status
-# from services.post_service import PostService
-# from models import UserModel
+from fastapi import APIRouter, Form
+from typing import Optional
+from fastapi import APIRouter, Depends, UploadFile, File, Form
 from app.core.db import AsyncSessionLocal, get_db_session
 from app.core.dependecies import get_current_user
 from app.model.user_model import UserModel
 from app.repository.posts_repository import PostRepository
 from app.schemas.posts_schema import PostCreate, PostResponse
 from app.service.posts_service import PostService
-
 
 router = APIRouter(prefix="/posts",tags=["Posts"])
 
@@ -21,7 +18,6 @@ async def create_post(
     current_user: UserModel = Depends(get_current_user),
     session: AsyncSessionLocal = Depends(get_db_session)   # type: ignore
 ):
-    # E podi function eka nathi nisa, Router eka ATHULE mewa ekata amunanna wenawa:
     repo = PostRepository(session)
     service = PostService(repo)
 

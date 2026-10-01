@@ -1,13 +1,10 @@
 from fastapi import APIRouter, BackgroundTasks, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession
-
 from app.middleware.roles import authorize_roles
 from app.model.user_model import Role
 from app.repository.user_repository import UserRepository
-from app.service import user_service
 from app.service.user_service import AuthService
 from app.schemas.user_schema import ForgotPasswordRequestSchema, ResetPasswordRequestSchema, TokenResponseSchema, UserLoginSchema, UserProfileUpdateSchema, UserRegisterSchema, UserResponseSchema , RefreshTokenRequestSchema
-from app.controller import user_controller
 from app.core.db import get_db_session
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
