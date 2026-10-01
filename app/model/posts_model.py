@@ -8,7 +8,7 @@ class PostStatus(str, enum.Enum):
     PUBLISHED = "PUBLISHED"
     UNPUBLISHED = "UNPUBLISHED"
 
-class Post(Base):
+class Posts_Model(Base):
     __tablename__ = "posts"
 
     id = Column(Integer, primary_key=True, index=True)
@@ -20,4 +20,4 @@ class Post(Base):
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     
     # Relationship with User model
-    owner = relationship("User", back_populates="posts")
+    owner = relationship("UserModel", back_populates="posts")

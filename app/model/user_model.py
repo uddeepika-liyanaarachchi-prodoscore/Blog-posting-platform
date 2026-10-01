@@ -1,7 +1,7 @@
 from enum import Enum
 from sqlalchemy import Column, Integer, String
 from app.core.db import Base
-
+from sqlalchemy.orm import relationship
 
 class Role(str, Enum):
     USER = "user"
@@ -18,3 +18,5 @@ class UserModel(Base):
     first_name = Column(String(100), nullable=True)
     last_name = Column(String(100), nullable=True)
     phone_number = Column(String(20), nullable=True) 
+
+    posts = relationship("Posts_Model", back_populates="owner")
