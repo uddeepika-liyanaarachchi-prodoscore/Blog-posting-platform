@@ -8,3 +8,4 @@ bcrypt
 python-dotenv
 PyJWT
 aiomysql
+cloudinary
