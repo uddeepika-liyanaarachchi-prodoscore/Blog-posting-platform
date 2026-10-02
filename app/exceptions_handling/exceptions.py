@@ -25,3 +25,4 @@ async def username_password_invalicd_handler(request:Request, exc: InvalidPasswo
         status_code=status.HTTP_401_UNAUTHORIZED,
         content={"message":str(exc)}
     )
+

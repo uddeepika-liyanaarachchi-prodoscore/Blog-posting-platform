@@ -1,7 +1,7 @@
 from contextlib import asynccontextmanager
 
 from app.core.config import settings
-from app.core.exceptions import InvalidPasswordException, UserAlreadyExistsException, user_already_exists_handler ,username_password_invalicd_handler
+from app.exceptions_handling.exceptions import InvalidPasswordException, UserAlreadyExistsException, user_already_exists_handler ,username_password_invalicd_handler
 from app.routers.router import api_router
 from app.core.db import AsyncSessionLocal, engine, Base
 from app.core.seed import seed_initial_admin

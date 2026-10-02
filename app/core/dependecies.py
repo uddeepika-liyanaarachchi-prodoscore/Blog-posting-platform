@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 import jwt
 from sqlalchemy import select
 from app.core.db import  get_db_session
-from app.core.exceptions import InvalidPasswordException
+from app.exceptions_handling.exceptions import InvalidPasswordException
 from app.core.security import decode_access_token
 from app.model.user_model import UserModel
 from app.repository.posts_repository import PostRepository

@@ -5,7 +5,7 @@ from fastapi import BackgroundTasks, HTTPException, status
 import jwt
 
 from app.core.email import generate_otp, send_otp_email
-from app.core.exceptions import InvalidPasswordException, UserAlreadyExistsException
+from app.exceptions_handling.exceptions import InvalidPasswordException, UserAlreadyExistsException
 from app.core.security import create_access_token, create_refresh_token, decode_refresh_token, hash_password, verify_password
 from app.model.password_reset_model import PasswordResetModel
 from app.repository.base import IUserRepository
@@ -42,8 +42,6 @@ class AuthService:
                hashed_password=hashed_pwd,
                role=Role.ADMIN.value
            )
-           print(new_user)
-           print(new_user.role)
 
            return await self._user_repository.create(new_user)
 

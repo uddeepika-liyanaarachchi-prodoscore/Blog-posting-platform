@@ -7,6 +7,7 @@ from app.core.db import Base
 class PostStatus(str, enum.Enum):
     PUBLISHED = "PUBLISHED"
     UNPUBLISHED = "UNPUBLISHED"
+    DELETED = "DELETED"
 
 class Posts_Model(Base):
     __tablename__ = "posts"
