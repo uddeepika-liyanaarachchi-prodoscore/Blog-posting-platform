@@ -10,5 +10,7 @@ class Settings:
     ACCESS_TOKEN_EXPIRE_MINUTES: int=int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES",""))
     REFRESH_TOKEN_EXPIRE_DAYS: int=int(os.getenv("REFRESH_TOKEN_EXPIRE_DAYS",""))
     JWT_ALGORITHM: str = os.getenv("JWT_ALGORITHM","")
+    GMAIL:str = os.getenv("GMAIL","")
+    GMAIL_SMTP_KEY:str = os.getenv("GMAIL_SMTP_KEY","")
 
 settings = Settings()

@@ -90,3 +90,26 @@ class ImageUploadFailedException(AppExceptions):
 class CloudinaryConnectingError(AppExceptions):
     def __init__(self, message: str = "Failed conneting to cloudinary storage. Please try again."):
         super().__init__(message=message, status_code=502)
+
+
+# ==========================================
+# 4. Config Values 
+# ==========================================
+
+class EnvLoadingError(AppExceptions):
+    def __init__(self, message: str = "Failed to load config values. check your environtment variables and try again."):
+        super().__init__(message=message, status_code=500)
+
+
+# ==========================================
+# 5. Email sending related
+# ==========================================
+
+class OTPGeneratingError(AppExceptions):
+    def __init__(self, message: str = "Failed to load the OTP."):
+        super().__init__(message=message, status_code=500)
+
+class SendingEmailFailed(AppExceptions):
+    def __init__(self, message: str = "Failed to send the email."):
+        super().__init__(message=message, status_code=502)
+
