@@ -28,3 +28,7 @@ class IPostRepository(ABC):
     @abstractmethod
     async def update_status(self, post: Posts_Model) -> Posts_Model:
         pass
+
+    @abstractmethod
+    async def get_posts_by_user_id(self, user_id: int) -> List[Posts_Model]:
+        pass

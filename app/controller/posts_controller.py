@@ -1,13 +1,12 @@
 from fastapi import APIRouter, Form
-from typing import Optional
+from typing import List, Optional
 from fastapi import APIRouter, Depends, UploadFile, File, Form
 from app.core.db import AsyncSessionLocal, get_db_session
 from app.core.dependecies import get_current_user
 from app.middleware.roles import authorize_roles
-from app.model.posts_model import PostStatus
 from app.model.user_model import Role, UserModel
 from app.repository.posts_repository import PostRepository
-from app.schemas.posts_schema import PostCreate, PostResponse, PostStatusEnum, PostUpdateSchema
+from app.schemas.posts_schema import PostCreate, PostResponse, PostUpdateSchema
 from app.service.posts_service import PostService
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -59,9 +58,13 @@ async def delete_post(posts_id:int,service:PostService=Depends(get_posts_service
     posts = await service.delete_post(posts_id) # type: ignore
     return PostResponse.model_validate(posts)
    
-@router.get("/h1")
-async def user_profile():
-    return {
-        "message": "Welcome User! Only USER can access this.",
-        "user_data": "current_user"
-    }
+@router.get("/get-all_posts/{user_id}",response_model=List[PostResponse])
+async def user_profile(
+    current_user: dict = Depends(authorize_roles([Role.USER])),
+    service: PostService = Depends(get_posts_service)
+):
+    user_id = int(current_user["user_id"])
+    posts = await service.get_posts(user_id) 
+
+    return posts 
+    

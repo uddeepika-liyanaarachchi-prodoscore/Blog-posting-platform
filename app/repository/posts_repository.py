@@ -1,3 +1,4 @@
+from abc import abstractmethod
 from typing import List
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -20,8 +21,11 @@ class PostRepository(IPostRepository):
         result = await self._session.execute(select(Posts_Model).where(Posts_Model.id==post_id))
         return result.scalars().first()
 
-    async def get_all_published(self) -> List[Posts_Model]:
-        raise NotImplementedError
+    async def get_posts_by_user_id(self,user_id:int) -> List[Posts_Model]:
+        result = await self._session.execute(
+            select(Posts_Model).where(Posts_Model.user_id == user_id)
+        )
+        return list(result.scalars().all())
 
     async def update(self, post: Posts_Model) -> Posts_Model:
          self._session.add(post)
@@ -40,3 +44,9 @@ class PostRepository(IPostRepository):
              await self._session.commit()
              await self._session.refresh(post)
              return post
+
+    async def get_all_published(self) -> List[Posts_Model]:
+          raise NotImplementedError
+
+
+    

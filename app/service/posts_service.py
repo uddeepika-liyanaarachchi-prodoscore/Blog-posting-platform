@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import List, Optional
 from fastapi import UploadFile, logger
 import logging
 
@@ -62,5 +62,6 @@ class PostService:
         else:
             raise PostsNotFoundException(posts_id)
 
-
+    async def get_posts(self,user_id:int)->List[Posts_Model]:
+        return await self._post_repository.get_posts_by_user_id(user_id)
 
