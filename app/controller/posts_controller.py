@@ -1,14 +1,13 @@
-from email.mime import image
-
 from fastapi import APIRouter, Form
 from typing import Optional
 from fastapi import APIRouter, Depends, UploadFile, File, Form
 from app.core.db import AsyncSessionLocal, get_db_session
 from app.core.dependecies import get_current_user
 from app.middleware.roles import authorize_roles
+from app.model.posts_model import PostStatus
 from app.model.user_model import Role, UserModel
 from app.repository.posts_repository import PostRepository
-from app.schemas.posts_schema import PostCreate, PostResponse, PostUpdateSchema
+from app.schemas.posts_schema import PostCreate, PostResponse, PostStatusEnum, PostUpdateSchema
 from app.service.posts_service import PostService
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -48,6 +47,11 @@ async def update_post(
         content=content,
     )
     posts= await service.update_post(posts_id,dto,image=image)
+    return PostResponse.model_validate(posts)
+
+@router.patch("/unpublish/{posts_id}",response_model=PostResponse)
+async def unpublish_post(posts_id:int,status=PostStatus,service:PostService=Depends(get_posts_service),Depends=(authorize_roles([Role.USER]))):
+    posts = await service.unpublish_post(posts_id,status) # type: ignore
     return PostResponse.model_validate(posts)
     
 @router.get("/h1")
