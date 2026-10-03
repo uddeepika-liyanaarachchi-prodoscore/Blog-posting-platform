@@ -4,6 +4,8 @@ import cloudinary.uploader
 from fastapi import UploadFile, HTTPException, status
 from dotenv import load_dotenv
 
+from app.exceptions_handling.exceptions import CloudinaryConnectingError
+
 load_dotenv()
 
 cloudinary.config(
@@ -18,7 +20,4 @@ def upload_image_to_cloudinary(file: UploadFile) -> str:
         result = cloudinary.uploader.upload(file.file, folder="blog_posts")
         return result.get("secure_url")
     except Exception as e:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Image upload failed: {str(e)}"
-        )
+        raise CloudinaryConnectingError()

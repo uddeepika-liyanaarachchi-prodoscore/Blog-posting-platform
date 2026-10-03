@@ -5,8 +5,8 @@ from fastapi import BackgroundTasks, HTTPException, status
 import jwt
 
 from app.core.email import generate_otp, send_otp_email
-from app.exceptions_handling.exceptions import InvalidPasswordException, UserAlreadyExistsException
 from app.core.security import create_access_token, create_refresh_token, decode_refresh_token, hash_password, verify_password
+from app.exceptions_handling.exceptions import InvalidCredentialsException, UserAlreadyExistsException, UserNotFoundException
 from app.model.password_reset_model import PasswordResetModel
 from app.repository.base import IUserRepository
 from app.schemas.user_schema import ForgotPasswordRequestSchema, ResetPasswordRequestSchema, UserLoginSchema, UserProfileUpdateSchema, UserRegisterSchema
@@ -49,7 +49,7 @@ class AuthService:
         user = await self._user_repository.get_by_email(data.email)
 
         if not user or not verify_password(data.password,str(user.hashed_password)):
-            raise InvalidPasswordException(email=data.email)
+            raise InvalidCredentialsException(data.email)
 
         payload = {
             "sub": user.email,
@@ -93,13 +93,13 @@ class AuthService:
     async def get_profile(self, user_id: int):
         user = await self._user_repository.get_by_id(user_id)
         if not user:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+            raise UserNotFoundException(user_id)
         return user
 
     async def update_profile(self, user_id: int, update_data: UserProfileUpdateSchema):
         user = await self._user_repository.get_by_id(user_id)
         if not user:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+            raise UserNotFoundException(user_id)
 
         for key, value in update_data.model_dump(exclude_unset=True).items():
             setattr(user, key, value)
@@ -109,7 +109,7 @@ class AuthService:
     async def request_password_reset(self, data: ForgotPasswordRequestSchema, bg_tasks: BackgroundTasks):
         user = await self._user_repository.get_by_email(data.email)
         if not user:
-            return {"message": "If this email exists, an OTP has been sent."}
+            raise UserNotFoundException()
 
         otp = generate_otp()
         expires = datetime.now(timezone.utc).replace(tzinfo=None) + timedelta(minutes=10)
@@ -118,7 +118,7 @@ class AuthService:
             email=data.email,
             otp_code=otp,
             expires_at=expires
-        )
+        ) # type: ignore
         await self._user_repository.save_otp(reset_entry)
 
         bg_tasks.add_task(send_otp_email, data.email, otp)

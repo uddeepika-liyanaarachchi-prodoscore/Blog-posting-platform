@@ -1,13 +1,14 @@
 from contextlib import asynccontextmanager
 
 from app.core.config import settings
-from app.exceptions_handling.exceptions import InvalidPasswordException, UserAlreadyExistsException, user_already_exists_handler ,username_password_invalicd_handler
 from app.routers.router import api_router
 from app.core.db import AsyncSessionLocal, engine, Base
 from app.core.seed import seed_initial_admin
-from fastapi import FastAPI
+from fastapi import FastAPI , Request
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import create_async_engine
+from fastapi.responses import JSONResponse
+from app.exceptions_handling.exceptions import AppExceptions
 
 async def init_mysql_database():
     db_url = settings.DATABASE_URL
@@ -35,8 +36,16 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="Production Auth API", lifespan=lifespan)
 
-# Register Exception Handlers
-app.add_exception_handler(UserAlreadyExistsException, user_already_exists_handler) # type: ignore[arg-type]
-app.add_exception_handler(InvalidPasswordException, username_password_invalicd_handler) # type: ignore
+
+@app.exception_handler(AppExceptions)
+async def app_exception_handler(request: Request, exc: AppExceptions):
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={
+            "success": False,
+            "error_code": exc.__class__.__name__,
+            "message": exc.message
+        }
+    )
 # Include Central Router
 app.include_router(api_router,prefix="/api/v1")

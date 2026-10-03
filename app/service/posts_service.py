@@ -4,7 +4,7 @@ import logging
 
 from httpx import delete
 from app.core.cloudinary_util import upload_image_to_cloudinary
-from app.exceptions_handling.posts_exceptions import PostsNotFoundException
+from app.exceptions_handling.exceptions import PostsNotFoundException
 from app.model.posts_model import PostStatus, Posts_Model
 from app.repository.interfaces.post_repo_interface import IPostRepository
 from app.schemas.posts_schema import PostCreate, PostUpdateSchema
