@@ -58,8 +58,8 @@ async def delete_post(posts_id:int,service:PostService=Depends(get_posts_service
     posts = await service.delete_post(posts_id) # type: ignore
     return PostResponse.model_validate(posts)
    
-@router.get("/get-all_posts/{user_id}",response_model=List[PostResponse])
-async def user_profile(
+@router.get("/get-all/{user_id}",response_model=List[PostResponse])
+async def load_posts_by_id(
     current_user: dict = Depends(authorize_roles([Role.USER])),
     service: PostService = Depends(get_posts_service)
 ):
@@ -67,4 +67,14 @@ async def user_profile(
     posts = await service.get_posts(user_id) 
 
     return posts 
+    
+
+@router.get("/get-all-posts",response_model=List[PostResponse])
+async def load_all_posts(
+    current_user: dict = Depends(authorize_roles([Role.USER])),
+    service: PostService = Depends(get_posts_service)
+):
+    posts = await service.get_all_posts() 
+    return posts 
+        
     

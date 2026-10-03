@@ -3,7 +3,7 @@ from typing import List
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.model.posts_model import Posts_Model
+from app.model.posts_model import PostStatus, Posts_Model
 from app.model.user_model import UserModel
 from app.repository.interfaces.post_repo_interface import IPostRepository
 
@@ -46,7 +46,12 @@ class PostRepository(IPostRepository):
              return post
 
     async def get_all_published(self) -> List[Posts_Model]:
-          raise NotImplementedError
-
+        stmt = (
+            select(Posts_Model)
+            .where(Posts_Model.status == PostStatus.PUBLISHED)
+            .order_by(Posts_Model.id.desc())
+        )
+        result = await self._session.execute(stmt)
+        return list(result.scalars().all())
 
     
