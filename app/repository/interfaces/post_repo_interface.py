@@ -24,3 +24,7 @@ class IPostRepository(ABC):
     @abstractmethod
     async def delete(self, post: Posts_Model) -> None:
         pass
+
+    @abstractmethod
+    async def update_status(self, post: Posts_Model) -> Posts_Model:
+        pass

@@ -48,7 +48,7 @@ class PostService:
             return await self._post_repository.update(post)
         elif post.status == PostStatus.UNPUBLISHED:  # type: ignore
             post.status = PostStatus.PUBLISHED # type: ignore
-            return await self._post_repository.update(post)
+            return await self._post_repository.update_status(post)
         else:
             raise PostsNotFoundException(posts_id)
         

@@ -31,3 +31,9 @@ class PostRepository(IPostRepository):
 
     async def delete(self, post: Posts_Model) -> None:
         raise NotImplementedError
+
+    async def update_status(self, post: Posts_Model) -> Posts_Model:
+             self._session.add(post)
+             await self._session.commit()
+             await self._session.refresh(post)
+             return post
