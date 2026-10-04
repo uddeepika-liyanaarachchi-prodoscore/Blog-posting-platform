@@ -1,6 +1,6 @@
 from abc import abstractmethod
-from typing import List
-from sqlalchemy import select
+from typing import List, Optional
+from sqlalchemy import or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.model.posts_model import PostStatus, Posts_Model
@@ -21,12 +21,23 @@ class PostRepository(IPostRepository):
         result = await self._session.execute(select(Posts_Model).where(Posts_Model.id==post_id))
         return result.scalars().first()
 
-    async def get_posts_by_user_id(self,user_id:int) -> List[Posts_Model]:
-        result = await self._session.execute(
-            select(Posts_Model).where(Posts_Model.user_id == user_id)
-        )
-        return list(result.scalars().all())
+    async def get_posts_by_user_id(self,user_id: int, query: Optional[str] = None, limit: int = 10, offset: int = 0) -> List[Posts_Model]:
+        stmt = select(Posts_Model).where(Posts_Model.user_id == user_id)
 
+        if query:
+            search_pattern = f"%{query}%"
+            stmt = stmt.where(
+                or_(
+                    Posts_Model.title.ilike(search_pattern),
+                    Posts_Model.content.ilike(search_pattern),
+                )
+            )
+
+        stmt = stmt.order_by(Posts_Model.id.desc()).limit(limit).offset(offset)
+
+        result = await self._session.execute(stmt)
+        return list(result.scalars().all())
+    
     async def update(self, post: Posts_Model) -> Posts_Model:
          self._session.add(post)
          await self._session.commit()
@@ -45,12 +56,22 @@ class PostRepository(IPostRepository):
              await self._session.refresh(post)
              return post
 
-    async def get_all_published(self) -> List[Posts_Model]:
+    async def get_all_published(self,query: Optional[str] = None, limit: int = 10, offset: int = 0) -> List[Posts_Model]:
         stmt = (
             select(Posts_Model)
             .where(Posts_Model.status == PostStatus.PUBLISHED)
             .order_by(Posts_Model.id.desc())
         )
+        if query:
+            search_pattern = f"%{query}%"
+            stmt = stmt.where(
+                or_(
+                    Posts_Model.title.ilike(search_pattern),
+                    Posts_Model.content.ilike(search_pattern),
+                )
+            )
+
+        stmt = stmt.order_by(Posts_Model.id.desc()).limit(limit).offset(offset)
         result = await self._session.execute(stmt)
         return list(result.scalars().all())
 
