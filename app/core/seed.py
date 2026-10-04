@@ -20,7 +20,7 @@ async def seed_initial_admin(session: AsyncSession):
         default_admin = UserModel(
             email=admin_email,
             hashed_password=hash_password(admin_password),
-            role=Role.ADMIN,
+            role=Role.ADMIN.value,
         )
         session.add(default_admin)
         await session.commit()
