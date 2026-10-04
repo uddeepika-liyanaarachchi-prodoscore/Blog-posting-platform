@@ -1,7 +1,7 @@
 from enum import Enum
 from typing import Optional
-from fastapi import UploadFile
 from pydantic import BaseModel
+from pydantic import ConfigDict
 
 class PostStatusEnum(str, Enum):
     PUBLISHED = "PUBLISHED"
@@ -28,5 +28,4 @@ class PostResponse(PostBase):
     status: PostStatusEnum
     user_id: int
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)

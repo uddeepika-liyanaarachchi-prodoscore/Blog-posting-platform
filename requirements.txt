@@ -10,3 +10,6 @@ PyJWT
 aiomysql
 cloudinary
 aiosmtplib
+pytest 
+pytest-asyncio 
+httpx

@@ -1,8 +1,8 @@
 
 from typing import Optional
-
 from pydantic import BaseModel, EmailStr
 from app.model.user_model import Role
+from pydantic import ConfigDict
 
 class UserRegisterSchema(BaseModel):
     email: EmailStr
@@ -42,5 +42,4 @@ class UserResponseSchema(BaseModel):
     last_name: Optional[str] = None
     phone_number: Optional[str] = None
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
