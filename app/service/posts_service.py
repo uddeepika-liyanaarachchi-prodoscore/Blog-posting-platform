@@ -1,5 +1,5 @@
 from typing import List, Optional
-from fastapi import UploadFile, logger
+import fastapi
 import logging
 
 from httpx import delete
@@ -20,7 +20,7 @@ class PostService:
         self, 
         dto:PostCreate,
         user_id: int, 
-        image: Optional[UploadFile] = None
+        image: Optional[fastapi.UploadFile] = None
     ) -> Posts_Model:
         image_url = None
         if image:
@@ -35,7 +35,7 @@ class PostService:
         )
         return await self._post_repository.create(new_post)
 
-    async def update_post(self,posts_id:int,data:PostUpdateSchema,image:Optional[UploadFile]=None)-> Posts_Model:
+    async def update_post(self,posts_id:int,data:PostUpdateSchema,image:Optional[fastapi.UploadFile]=None)-> Posts_Model:
         post = await self._post_repository.get_by_id(posts_id)
 
         if not post:
@@ -44,7 +44,7 @@ class PostService:
         if post.user_id != data.user_id:  # type: ignore
             raise PostAccessDeniedException()
 
-        if post.status == PostStatus.DELETED.value: # type: ignore
+        if post.status == PostStatus.DELETED: # type: ignore
             raise PostAlreadyDeletedException(posts_id)
 
         if data.title:
@@ -63,7 +63,7 @@ class PostService:
         if not post:
             raise PostsNotFoundException(posts_id)
 
-        if post.status == PostStatus.DELETED.value: # type: ignore
+        if post.status == PostStatus.DELETED: # type: ignore
             raise PostAlreadyDeletedException(posts_id)
         
         if post.status == PostStatus.PUBLISHED: # type: ignore
@@ -81,7 +81,7 @@ class PostService:
         if not post:
             raise PostsNotFoundException(posts_id)
 
-        if post.status == PostStatus.DELETED.value: # type: ignore
+        if post.status == PostStatus.DELETED: # type: ignore
             raise PostAlreadyDeletedException(posts_id)
         
         if post.status == PostStatus.UNPUBLISHED: # type: ignore
