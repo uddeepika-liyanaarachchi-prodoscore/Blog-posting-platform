@@ -1,9 +1,9 @@
 import os
 import cloudinary
 import cloudinary.uploader
-from fastapi import UploadFile, HTTPException, status
+from fastapi import UploadFile
 from dotenv import load_dotenv
-
+from tenacity import retry, stop_after_attempt, wait_exponential
 from app.exceptions_handling.exceptions import CloudinaryConnectingError
 
 load_dotenv()
@@ -15,6 +15,7 @@ cloudinary.config(
     secure=True
 )
 
+@retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=2, max=6))
 def upload_image_to_cloudinary(file: UploadFile) -> str:
     try:
         result = cloudinary.uploader.upload(file.file, folder="blog_posts")

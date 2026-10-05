@@ -13,3 +13,5 @@ aiosmtplib
 pytest 
 pytest-asyncio 
 httpx
+tenacity
+python-multipart
