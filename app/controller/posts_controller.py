@@ -25,6 +25,14 @@ async def create_post(
     current_user: UserModel = Depends(get_current_user),
     session: AsyncSessionLocal = Depends(get_db_session)   # type: ignore
 ):
+    """
+    Create a new post for the currently authenticated user.
+
+    - **title**: Title of the post (form data)
+    - **content**: Main body/content of the post
+    - **image**: Optional image upload (multipart/form-data)
+    """
+
     repo = PostRepository(session)
     service = PostService(repo)
 
@@ -41,6 +49,14 @@ async def update_post(
     service:PostService=Depends(get_posts_service),
     protect: dict=Depends(authorize_roles([Role.USER]))
 ):
+    """
+    Update post details including title, content, or replace the image.
+
+    - **posts_id**: Target post's unique identifier
+    - **title**: Updated title
+    - **content**: Updated content
+    - **image**: Optional new image replacement
+    """
     dto = PostUpdateSchema(
         title=title,
         content=content,
@@ -50,11 +66,21 @@ async def update_post(
 
 @router.patch("/unpublish/{posts_id}",response_model=PostResponse)
 async def unpublish_post(posts_id:int,service:PostService=Depends(get_posts_service),Depends=(authorize_roles([Role.USER]))):
+    """
+    Hide or unpublish a post from public feeds without permanently deleting it.
+
+    - **posts_id**: Unique ID of the post to unpublish
+    """
     posts = await service.unpublish_post(posts_id) # type: ignore
     return PostResponse.model_validate(posts)
 
 @router.patch("/delete/{posts_id}",response_model=PostResponse)
 async def delete_post(posts_id:int,service:PostService=Depends(get_posts_service),Depends=(authorize_roles([Role.USER]))):
+    """
+    Soft-delete a post by its ID.
+
+    - **posts_id**: Unique ID of the post to delete
+    """
     posts = await service.delete_post(posts_id) # type: ignore
     return PostResponse.model_validate(posts)
    
@@ -66,6 +92,11 @@ async def load_posts_by_id(
     current_user: dict = Depends(authorize_roles([Role.USER])),
     service: PostService = Depends(get_posts_service)
 ):
+    """
+    Retrieve a paginated list of posts belonging to the authenticated user.
+
+    Supports optional keyword search filtering by title or content.
+    """
     user_id = int(current_user["user_id"])
     offset = (page - 1) * limit
     posts = await service.get_posts(user_id,query=search, limit=limit, offset=offset) 
@@ -80,6 +111,9 @@ async def load_all_posts(
     current_user: dict = Depends(authorize_roles([Role.USER])),
     service: PostService = Depends(get_posts_service)
 ):  
+    """
+    Retrieve all published posts across all users with pagination and optional search.
+    """
     offset = (page - 1) * limit
     posts = await service.get_all_posts(query=search, limit=limit, offset=offset) 
     return posts 
