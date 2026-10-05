@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Form
+from fastapi import APIRouter, Form, Query
 from typing import List, Optional
 from fastapi import APIRouter, Depends, UploadFile, File, Form
 from app.core.db import AsyncSessionLocal, get_db_session
@@ -60,21 +60,28 @@ async def delete_post(posts_id:int,service:PostService=Depends(get_posts_service
    
 @router.get("/get-all/{user_id}",response_model=List[PostResponse])
 async def load_posts_by_id(
+    search: Optional[str] = Query(None, description="Search by title or content"),
+    page: int = Query(1, ge=1, description="Page number"),
+    limit: int = Query(10, ge=1, le=100, description="Items per page"),
     current_user: dict = Depends(authorize_roles([Role.USER])),
     service: PostService = Depends(get_posts_service)
 ):
     user_id = int(current_user["user_id"])
-    posts = await service.get_posts(user_id) 
-
+    offset = (page - 1) * limit
+    posts = await service.get_posts(user_id,query=search, limit=limit, offset=offset) 
     return posts 
     
 
 @router.get("/get-all-posts",response_model=List[PostResponse])
 async def load_all_posts(
+    search: Optional[str] = Query(None, description="Search by title or content"),
+    page: int = Query(1, ge=1, description="Page number"),
+    limit: int = Query(10, ge=1, le=100, description="Items per page"),
     current_user: dict = Depends(authorize_roles([Role.USER])),
     service: PostService = Depends(get_posts_service)
-):
-    posts = await service.get_all_posts() 
+):  
+    offset = (page - 1) * limit
+    posts = await service.get_all_posts(query=search, limit=limit, offset=offset) 
     return posts 
         
     

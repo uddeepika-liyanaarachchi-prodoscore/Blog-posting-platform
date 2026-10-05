@@ -60,6 +60,11 @@ class InvalidPostStatusException(AppExceptions):
     def __init__(self, msg: str = "Invalid status transition for this post."):
         super().__init__(message=msg, status_code=400)
 
+class InvalidPostsType(AppExceptions):
+    def __init__(self, msg: str = "Invalid type ."):
+        super().__init__(message=msg, status_code=422)
+
+
 class PostAlreadyDeletedException(AppExceptions):
     def __init__(self, identifier: int | str):
         super().__init__(

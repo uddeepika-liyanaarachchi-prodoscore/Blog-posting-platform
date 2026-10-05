@@ -14,7 +14,7 @@ class IPostRepository(ABC):
         pass
 
     @abstractmethod
-    async def get_all_published(self) -> List[Posts_Model]:
+    async def get_all_published(self,query: Optional[str] = None, limit: int = 10, offset: int = 0) -> List[Posts_Model]:
         pass
 
     @abstractmethod
@@ -30,5 +30,5 @@ class IPostRepository(ABC):
         pass
 
     @abstractmethod
-    async def get_posts_by_user_id(self, user_id: int) -> List[Posts_Model]:
+    async def get_posts_by_user_id(self, user_id: int, query: Optional[str] = None, limit: int = 10, offset: int = 0) -> List[Posts_Model]:
         pass
