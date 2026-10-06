@@ -11,7 +11,7 @@ def generate_otp() -> str:
     except Exception as e:
         raise OTPGeneratingError(f"Failed to generate OTP: {str(e)}")
 
-@retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=2, max=6))
+@retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=2, max=6),reraise=True)
 async def send_otp_email(email: str, otp: str):
     sender_email = settings.GMAIL      
     sender_password = settings.GMAIL_SMTP_KEY  
