@@ -22,7 +22,11 @@ class PostRepository(IPostRepository):
         return result.scalars().first()
 
     async def get_posts_by_user_id(self,user_id: int, query: Optional[str] = None, limit: int = 10, offset: int = 0) -> List[Posts_Model]:
-        stmt = select(Posts_Model).where(Posts_Model.user_id == user_id)
+
+        stmt = select(Posts_Model).where(
+            Posts_Model.user_id == user_id,
+            Posts_Model.status != PostStatus.DELETED 
+        )
 
         if query:
             search_pattern = f"%{query}%"

@@ -4,7 +4,7 @@ import logging
 
 from httpx import delete
 from app.core.cloudinary_util import upload_image_to_cloudinary
-from app.exceptions_handling.exceptions import PostAccessDeniedException, PostAlreadyDeletedException, PostsNotFoundException
+from app.exceptions_handling.exceptions import InvalidPostStatusException, PostAccessDeniedException, PostAlreadyDeletedException, PostsNotFoundException
 from app.model.posts_model import PostStatus, Posts_Model
 from app.repository.interfaces.post_repo_interface import IPostRepository
 from app.schemas.posts_schema import PostCreate, PostUpdateSchema
@@ -88,7 +88,7 @@ class PostService:
             post.status = PostStatus.DELETED # type: ignore
             return await self._post_repository.delete(post)
         else:
-            raise PostsNotFoundException(posts_id)
+            raise InvalidPostStatusException("Posts not unpublished")
 
     async def get_posts(self,user_id:int,query: Optional[str] = None, limit: int = 10, offset: int = 0)->List[Posts_Model]:
         return await self._post_repository.get_posts_by_user_id(user_id,query=query,limit=limit,offset=offset)
