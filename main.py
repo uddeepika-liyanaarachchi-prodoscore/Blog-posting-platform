@@ -9,6 +9,7 @@ from sqlalchemy import text
 from sqlalchemy.ext.asyncio import create_async_engine
 from fastapi.responses import JSONResponse
 from app.exceptions_handling.exceptions import AppExceptions
+from fastapi.middleware.cors import CORSMiddleware  
 
 async def init_mysql_database():
     db_url = settings.DATABASE_URL
@@ -35,7 +36,24 @@ async def lifespan(app: FastAPI):
     await engine.dispose()
 
 app = FastAPI(title="Production Auth API", lifespan=lifespan)
+origins = [
+    "http://localhost:5500",      
+    "http://127.0.0.1:5500",
+    "http://127.0.0.1:3000",
+]
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,            
+    allow_credentials=True,           
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"], 
+    allow_headers=[
+        "Content-Type",
+        "Authorization",
+        "Accept",
+        "X-Requested-With",
+    ],                               
+)
 
 @app.exception_handler(AppExceptions)
 async def app_exception_handler(request: Request, exc: AppExceptions):

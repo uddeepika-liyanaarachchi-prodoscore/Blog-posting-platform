@@ -108,7 +108,6 @@ async def load_all_posts(
     search: Optional[str] = Query(None, description="Search by title or content"),
     page: int = Query(1, ge=1, description="Page number"),
     limit: int = Query(10, ge=1, le=100, description="Items per page"),
-    current_user: dict = Depends(authorize_roles([Role.ADMIN])),
     service: PostService = Depends(get_posts_service)
 ):  
     """
