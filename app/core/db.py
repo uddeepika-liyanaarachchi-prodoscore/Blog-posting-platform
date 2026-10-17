@@ -6,11 +6,27 @@ from sqlalchemy.orm import declarative_base
 
 from app.core.config import settings
 
-# create the database connection
-engine = create_async_engine(settings.DATABASE_URL, echo=True)
+import ssl
+from sqlalchemy.ext.asyncio import create_async_engine
+from app.core.config import settings
 
-# create a session everytime 
-AsyncSessionLocal = async_sessionmaker(bind=engine, autoflush=False,expire_on_commit=False)
+ssl_context = ssl.create_default_context()
+
+# create the database connection
+engine = create_async_engine(
+    settings.DATABASE_URL,
+    connect_args={"ssl": ssl_context},
+    pool_pre_ping=True,     
+    pool_recycle=300,        
+)
+
+# Session factory 
+AsyncSessionLocal = async_sessionmaker(
+    bind=engine,
+    autoflush=False,
+    expire_on_commit=False,
+    class_=AsyncSession,
+)
 
 # create db tables
 Base = declarative_base()
