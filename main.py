@@ -22,6 +22,10 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="Production Auth API", lifespan=lifespan)
 
+@app.get("/")
+def read_root():
+    return {"status": "ok", "message": "FastAPI is running on Vercel"}
+
 origins = [
     "http://localhost:5500",      
     "http://127.0.0.1:5501",
