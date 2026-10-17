@@ -13,6 +13,7 @@ class UserLoginSchema(BaseModel):
     password: str
 
 class TokenResponseSchema(BaseModel):
+    id:Optional[int]=None
     access_token: str
     refresh_token: str
     role:Role
