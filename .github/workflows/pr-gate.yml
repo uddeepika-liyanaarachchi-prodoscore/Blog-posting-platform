@@ -1,0 +1,68 @@
+name: Backend PR Gate & QA Verification
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  e2e-backend-gate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Backend PR Code
+        uses: actions/checkout@v4
+        with:
+          path: backend-api
+
+      - name: Checkout Frontend Repo
+        uses: actions/checkout@v4
+        with:
+          repository: uddeepika-liyanaarachchi-prodoscore/Blog-posting-platform-Front-End
+          token: ${{ secrets.QA_TRIGGER_TOKEN }}
+          path: Blog-Poster-Project-FE
+
+      - name: Checkout QA Automation Repo
+        uses: actions/checkout@v4
+        with:
+          repository: uddeepika-liyanaarachchi-prodoscore/Blog-posting-platform-QA-Automation
+          token: ${{ secrets.QA_TRIGGER_TOKEN }}
+          path: qa-automation
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          version: "latest"
+          enable-cache: true
+
+      - name: Set up Python
+        run: uv python install 3.12
+
+      - name: Set up Google Chrome
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y google-chrome-stable
+
+      - name: Start Backend API Server
+        working-directory: backend-api
+        run: |
+          uv sync
+          nohup uv run uvicorn main:app --host 0.0.0.0 --port 8000 > backend.log 2>&1 &
+          sleep 4
+          curl -I http://127.0.0.1:8000/docs || cat backend.log
+
+      - name: Run QA Tests
+        working-directory: qa-automation
+        env:
+          BROWSER: "chrome"
+          HEADLESS: "true"
+          EXPLICIT_WAIT: "12"
+        run: |
+          uv sync
+          uv run python run_tests.py
+
+      - name: Upload Test Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: be-pr-qa-report
+          path: qa-automation/reports/
