@@ -41,8 +41,10 @@ class PostService:
         if not post:
             raise PostsNotFoundException(posts_id)
 
-        if post.user_id != data.user_id:  # type: ignore
-            raise PostAccessDeniedException()
+        if image and image.filename:
+            image_url = upload_image_to_cloudinary(image)
+            if image_url:
+                post.image_url = image_url # type: ignore
 
         if post.status == PostStatus.DELETED: # type: ignore
             raise PostAlreadyDeletedException(posts_id)
