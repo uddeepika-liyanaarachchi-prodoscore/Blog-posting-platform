@@ -1,3 +1,5 @@
+from typing import List
+
 from fastapi import APIRouter, BackgroundTasks, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.middleware.roles import authorize_roles
@@ -34,6 +36,17 @@ async def register_admin(body: UserRegisterSchema,service: AuthService = Depends
     """
     user = await service.register_admin(body)
     return UserResponseSchema.model_validate(user)
+
+@router.get("/get-all-users",response_model=List[UserResponseSchema],status_code=status.HTTP_200_OK)
+async def get_all_users(
+    service: AuthService = Depends(get_auth_service),
+    current_user: dict = Depends(authorize_roles([Role.ADMIN])),
+):
+    """
+    Retrieve all registered users. Only accessible by ADMIN.
+    """
+    users = await service.get_all_users()
+    return [UserResponseSchema.model_validate(u) for u in users]
 
 @router.post("/login", response_model=TokenResponseSchema, status_code=status.HTTP_200_OK)
 async def login(body: UserLoginSchema, service:AuthService=Depends(get_auth_service)):

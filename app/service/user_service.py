@@ -1,5 +1,6 @@
 
 from datetime import datetime, timedelta,timezone
+from typing import List
 
 from fastapi import BackgroundTasks, HTTPException, status
 import jwt
@@ -143,3 +144,6 @@ class AuthService:
         await self._user_repository.update(user)
         await self._user_repository.save_otp(otp_record) 
         return {"message": "Password reset successfully. You can now login with your new password."}
+
+    async def get_all_users(self) -> List[UserModel]:
+        return await self._user_repository.get_all_users() # type: ignore

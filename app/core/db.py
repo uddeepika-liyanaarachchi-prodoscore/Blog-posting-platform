@@ -1,11 +1,8 @@
 from typing import AsyncGenerator
-
 from fastapi import FastAPI
 from sqlalchemy.ext.asyncio import create_async_engine,async_sessionmaker,AsyncSession
 from sqlalchemy.orm import declarative_base
-
 from app.core.config import settings
-
 import ssl
 from sqlalchemy.ext.asyncio import create_async_engine
 from app.core.config import settings
