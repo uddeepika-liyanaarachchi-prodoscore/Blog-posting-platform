@@ -9,7 +9,7 @@ from app.core.config import settings
 
 ssl_context = ssl.create_default_context()
 
-# create the database connection
+#create the database connection
 engine = create_async_engine(
     settings.DATABASE_URL,
     connect_args={"ssl": ssl_context},
@@ -24,6 +24,7 @@ AsyncSessionLocal = async_sessionmaker(
     expire_on_commit=False,
     class_=AsyncSession,
 )
+
 # # create the database connection
 # engine = create_async_engine(settings.DATABASE_URL, echo=True)
 

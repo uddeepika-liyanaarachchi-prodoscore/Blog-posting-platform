@@ -13,5 +13,6 @@ class Settings:
     GMAIL:str = os.getenv("GMAIL","")
     GMAIL_SMTP_KEY:str = os.getenv("GMAIL_SMTP_KEY","")
     GOOGLE_CLIENT_ID:str = os.getenv("GOOGLE_CLIENT_ID","")
+    GEMINI_API_KEY:str = os.getenv("GEMINI_API_KEY","")
 
 settings = Settings()

@@ -10,6 +10,7 @@ dependencies = [
     "cryptography>=50.0.2",
     "fastapi>=0.142.2",
     "google-auth>=2.62.0",
+    "google-genai>=2.31.0",
     "httpx>=0.28.1",
     "pydantic[email]>=2.13.5",
     "pyjwt>=2.15.1",
