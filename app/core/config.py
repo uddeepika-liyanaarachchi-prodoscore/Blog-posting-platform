@@ -12,5 +12,6 @@ class Settings:
     JWT_ALGORITHM: str = os.getenv("JWT_ALGORITHM","")
     GMAIL:str = os.getenv("GMAIL","")
     GMAIL_SMTP_KEY:str = os.getenv("GMAIL_SMTP_KEY","")
+    GOOGLE_CLIENT_ID:str = os.getenv("GOOGLE_CLIENT_ID","")
 
 settings = Settings()

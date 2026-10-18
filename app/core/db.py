@@ -27,6 +27,13 @@ AsyncSessionLocal = async_sessionmaker(
     expire_on_commit=False,
     class_=AsyncSession,
 )
+# # create the database connection
+# engine = create_async_engine(settings.DATABASE_URL, echo=True)
+
+
+# # create a session everytime 
+# AsyncSessionLocal = async_sessionmaker(bind=engine, autoflush=False,expire_on_commit=False)
+
 
 # create db tables
 Base = declarative_base()
