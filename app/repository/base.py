@@ -28,3 +28,6 @@ class IUserRepository(ABC):
     @abstractmethod
     async def get_valid_otp(self, email: str, otp: str) -> Optional[PasswordResetModel]:
         pass
+
+    def get_all_users(self):
+        pass

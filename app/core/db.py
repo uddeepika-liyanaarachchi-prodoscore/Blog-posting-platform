@@ -1,18 +1,15 @@
 from typing import AsyncGenerator
-
 from fastapi import FastAPI
 from sqlalchemy.ext.asyncio import create_async_engine,async_sessionmaker,AsyncSession
 from sqlalchemy.orm import declarative_base
-
 from app.core.config import settings
-
 import ssl
 from sqlalchemy.ext.asyncio import create_async_engine
 from app.core.config import settings
 
 ssl_context = ssl.create_default_context()
 
-# create the database connection
+#create the database connection
 engine = create_async_engine(
     settings.DATABASE_URL,
     connect_args={"ssl": ssl_context},
@@ -27,6 +24,14 @@ AsyncSessionLocal = async_sessionmaker(
     expire_on_commit=False,
     class_=AsyncSession,
 )
+
+# # create the database connection
+# engine = create_async_engine(settings.DATABASE_URL, echo=True)
+
+
+# # create a session everytime 
+# AsyncSessionLocal = async_sessionmaker(bind=engine, autoflush=False,expire_on_commit=False)
+
 
 # create db tables
 Base = declarative_base()

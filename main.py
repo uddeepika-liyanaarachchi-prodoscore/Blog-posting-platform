@@ -8,9 +8,24 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from app.exceptions_handling.exceptions import AppExceptions
 from fastapi.middleware.cors import CORSMiddleware
+# from sqlalchemy.ext.asyncio import create_async_engine
+# from sqlalchemy import text
+
+# async def init_mysql_database():
+#     db_url = settings.DATABASE_URL
+#     base_url, db_name = db_url.rsplit("/", 1)
+    
+#     temp_engine = create_async_engine(f"{base_url}/", isolation_level="AUTOCOMMIT")
+    
+#     async with temp_engine.connect() as conn:
+#         await conn.execute(text(f"CREATE DATABASE IF NOT EXISTS `{db_name}` CHARACTER SET utf8mb4;"))
+    
+#     await temp_engine.dispose()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    # await init_mysql_database()
+
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
 
@@ -37,11 +52,8 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,            
     allow_credentials=True,           
-    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"], 
-    allow_headers=[
-        "Content-Type",
-        "Authorization",
-    ],                               
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS","PATCH"], 
+    allow_headers=["*"]                            
 )
 
 @app.exception_handler(AppExceptions)

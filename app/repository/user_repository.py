@@ -5,7 +5,7 @@ from app.model.password_reset_model import PasswordResetModel
 from app.model.user_model import UserModel
 from app.repository.base import IUserRepository
 from sqlalchemy.ext.asyncio import AsyncSession
-from typing import Optional
+from typing import List, Optional
 
 
 class UserRepository(IUserRepository):
@@ -53,3 +53,8 @@ class UserRepository(IUserRepository):
             )
         )
         return result.scalars().first()
+
+    async def get_all_users(self) -> List[UserModel]:
+        query = select(UserModel).order_by(UserModel.id.asc())
+        result = await self._session.execute(query)
+        return result.scalars().all() # type: ignore
