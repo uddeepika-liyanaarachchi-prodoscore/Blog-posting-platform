@@ -39,6 +39,7 @@ class UserResponseSchema(BaseModel):
     id: int
     email: EmailStr
     role: Role  
+    is_google_user: bool
     first_name: Optional[str] = None
     last_name: Optional[str] = None
     phone_number: Optional[str] = None

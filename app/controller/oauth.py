@@ -44,7 +44,13 @@ async def google_auth(payload: GoogleAuthRequest, db: AsyncSession = Depends(get
         user = result.scalar_one_or_none()
 
         if not user:
-            user = UserModel(email=email, is_google_user=True, is_active=True)
+            user = UserModel(
+                email=email,
+                first_name=first_name,
+                last_name=last_name,
+                is_google_user=True, 
+                hashed_password=None
+                )
             db.add(user)
             await db.commit()
             await db.refresh(user)

@@ -42,7 +42,8 @@ def read_root():
     return {"status": "ok", "message": "FastAPI is running on Vercel"}
 
 origins = [
-    "http://localhost:5500",      
+    "http://localhost:5500", 
+    "http://localhost:5501",     
     "http://127.0.0.1:5501",
     "http://127.0.0.1:3000",
     "https://uddeepika-liyanaarachchi-prodoscore.github.io"
