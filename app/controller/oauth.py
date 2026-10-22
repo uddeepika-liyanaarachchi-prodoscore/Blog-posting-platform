@@ -61,11 +61,14 @@ async def google_auth(payload: GoogleAuthRequest, db: AsyncSession = Depends(get
             "role": user.role
         } # type: ignore
 
-        
+        access_token = create_access_token(payload) # type: ignore
+        refresh_token = create_refresh_token(payload) # type: ignore
+
         return {
             "success": True,
             "id": user.id,
-            "access_token": payload.token,
+            "access_token": access_token,
+            "refresh_token": refresh_token,
             "message": "Google Login Successful"
         }
 
